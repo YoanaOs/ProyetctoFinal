@@ -1,0 +1,17 @@
+[
+    {
+      "user": "Yoana",
+      "email": "yoanaosuna455@gmail.com",
+      "password": "$2a$05$ynaGey0DzetofFIDE0ZyhOqOZQze4kcjV/i5X35jSXDwaPDZMTGTS"
+    },
+    {
+      "user": "Juan",
+      "email": "a@algo.com",
+      "password": "$2a$05$a.WJ.I9ocOQMA6WR7UYI..pOMaG31kcEDUBodhPjmIFGH8d3j.fMu"
+    },
+    {
+      "user": "silver",
+      "email": "silver@gmail.com",
+      "password": "$2a$05$E4.UA4XMcBiR/wXTiZNt2Oes7ZmsgTnVnd5TiGBMq42eQBsgdjkh."
+    }
+  ]

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="bg"></div>
+    <div class="bg bg2"></div>
+    <div class="bg bg3"></div>
+
+    <div class="productos-header">
+        <h1>Lista de Productos</h1>
+        <button onclick="window.location.href='/admin'">Inicio</button>
+        <button onclick="window.location.href='/carrito'">Ver Carrito</button> <br> <br>
+        <div class="productos" id="productos"></div>
+    </div>
+
+    
+
+    <script>
+        let productos = []; 
+        
+        async function mostrarProductos() {
+            try {
+                const response = await fetch('/api/productos');
+                if (!response.ok) {
+                    throw new Error('Error en la red: ' + response.status);
+                }
+                productos = await response.json();
+
+                const contenedor = document.getElementById('productos');
+                contenedor.innerHTML = '';
+
+                productos.forEach(producto => {
+                    const productoDiv = document.createElement('div');
+                    productoDiv.classList.add('producto');
+                    productoDiv.innerHTML = `
+                        <img src="${producto.imagen}" alt="${producto.nombre}">
+                        <h3>${producto.nombre}</h3>
+                        <p>Precio: $${producto.precio}</p>
+                        <button onclick="agregarProductoAlCarrito(${producto.id})">Agregar al carrito</button>
+                    `;
+                    contenedor.appendChild(productoDiv);
+                });
+            } catch (error) {
+                console.error('Error al mostrar productos:', error);
+            }
+        }
+
+        const agregarProductoAlCarrito = (productoId) => {
+            const producto = productos.find(p => p.id === productoId);
+            if (producto) {
+                fetch('/api/agregar-carrito', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ producto }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al agregar al carrito');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data); 
+                    alert('Producto agregado al carrito');
+                })
+                .catch(error => {
+                    console.error('Error al agregar producto:', error);
+                });
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', mostrarProductos);
+    </script>
+    </div>
+</body>
+
+</html>

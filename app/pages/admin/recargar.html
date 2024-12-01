@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg"></div>
+    <div class="bg bg2"></div>
+    <div class="bg bg3"></div>
+
+    <div class="content">
+        <main>
+            <div class="form-container">
+                <h1>Recargar Saldo</h1> <br>
+                <button onclick="window.location.href='/admin'">Inicio</button>
+                <h2>Saldo disponible: <span id="saldo"></span></h2>
+                <div id="carrito"></div>
+                <input type="number" id="cantidad" placeholder="Cantidad a recargar" min="1" />
+                <button onclick="recargarSaldo()">Recargar Saldo</button> <br> <br>
+                
+                <button onclick="window.location.href='productos.html'">Volver a Productos</button>
+                <button onclick="window.location.href='/carrito'">Ver Carrito</button>
+            </div>
+        </main>
+    </div>
+    <script>
+        async function obtenerSaldo() {
+            const response = await fetch('/api/obtener-saldo');
+            const data = await response.json();
+            document.getElementById('saldo').innerText = data.saldo;
+        }
+
+        async function recargarSaldo() {
+            const cantidad = parseFloat(document.getElementById('cantidad').value);
+
+            if (isNaN(cantidad) || cantidad <= 0) {
+                alert('ingresa una cantidad válida.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/recargar-saldo', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ cantidad }),
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || 'Error al recargar saldo');
+                }
+
+                alert(data.message); 
+                document.getElementById('saldo').innerText = data.saldo; 
+                document.getElementById('cantidad').value = ''; 
+            } catch (error) {
+                console.error('Error al recargar saldo:', error);
+                alert('Error al recargar saldo: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

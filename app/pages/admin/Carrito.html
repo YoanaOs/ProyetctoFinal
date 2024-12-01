@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compras</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="bg"></div>
+    <div class="bg bg2"></div>
+    <div class="bg bg3"></div>
+
+    <div class="Compras-header">
+        <h1>Tu Carrito de Compras</h1>
+        <button onclick="inicio()">Inicio</button>
+        <button onclick="recargarsaldo()">Recargar saldo</button>
+        <h2>Saldo disponible: <span id="saldo"></span></h2>
+        <button onclick="window.location.href='productos.html'">Ver Productos</button>
+        <button onclick="vaciarCarrito()">Vaciar Carrito</button>
+        <button onclick="pagar()">Pagar</button><br><br>
+        <div id="carrito"></div> <br> <br>
+        <h2>Total: <span id="total"></span></h2>
+
+    </div>
+
+    <script>
+        function recargarsaldo() {
+            document.location.href = "/pagar";
+        }
+        function inicio() {
+            document.location.href = "/admin";
+        }
+        
+
+        async function cargarCarrito() {
+            document.getElementById('total').innerText = '$0'; 
+            const response = await fetch('/api/ver-carrito');
+            const data = await response.json();
+
+            const carritoDiv = document.getElementById('carrito');
+            carritoDiv.innerHTML = '';
+
+            if (data.carrito.length === 0) {
+                carritoDiv.innerHTML = '<p>Tu carrito está vacío.</p>';
+                return;
+            }
+            let total = 0;
+            data.carrito.forEach(producto => {
+                const productoDiv = document.createElement('div');
+                productoDiv.innerHTML = `
+                    <h3>${producto.nombre}</h3>
+                    <p>Precio: $${producto.precio}</p>
+                    <p>Cantidad: ${producto.cantidad}</p>
+                    <button onclick="quitarProducto(${producto.id})">Quitar Producto</button>
+                `;
+                carritoDiv.appendChild(productoDiv);
+                total += producto.precio * producto.cantidad;
+            });
+            document.getElementById('total').innerText = `$${total}`;
+        }
+
+        async function obtenerSaldo() {
+            const response = await fetch('/api/obtener-saldo');
+            const data = await response.json();
+            document.getElementById('saldo').innerText = `$${data.saldo}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await cargarCarrito();
+            await obtenerSaldo();
+        });
+
+        function vaciarCarrito() {
+            fetch('/api/vaciar-carrito', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    cargarCarrito();
+                    obtenerSaldo();
+                    document.getElementById('total').innerText = '$0'; 
+                });
+        }
+
+        // Quitar un producto del carrito
+        async function quitarProducto(id) {
+            try {
+                const response = await fetch(`/api/quitar-producto/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || 'Error al eliminar el producto');
+                }
+
+                alert(data.message);
+                cargarCarrito();
+            } catch (error) {
+                console.error('Error al quitar producto:', error);
+                mostrarMensajeError(error.message);
+            }
+        }
+        
+        //Pagar los articulos
+        async function pagar() {
+            try {
+                const response = await fetch('/api/pagar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || 'Error al procesar el pago');
+                }
+
+                alert(data.message);
+                cargarCarrito();
+                obtenerSaldo();
+                document.getElementById('total').innerText = '$0'; 
+            } catch (error) {
+                console.error('Error al pagar:', error);
+                alert('Error al procesar el pago: ' + error.message);
+            }
+        }
+    </script>
+</body>
+
+</html>

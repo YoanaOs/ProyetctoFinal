@@ -1,0 +1,38 @@
+[
+    {
+        "id": 1,
+        "nombre": "MotoG32",
+        "precio": 3200,
+        "imagen": "/imagenes/MotoG32.jpg"
+    },
+    {
+        "id": 2,
+        "nombre": "OppoA5",
+        "precio": 5600,
+        "imagen": "/imagenes/OppoA5.jpg"
+    },
+    {
+        "id": 3,
+        "nombre": "OppoA58",
+        "precio": 4500,
+        "imagen": "/imagenes/OppoA58.jpg"
+    },
+    {
+        "id": 4,
+        "nombre": "Samsung S9",
+        "precio": 6700,
+        "imagen": "/imagenes/SamsungS9.jpg"
+    },
+    {
+        "id": 5,
+        "nombre": "Samsung S21",
+        "precio": 12600,
+        "imagen": "/imagenes/SamsungS21.jpg"
+    },
+    {
+        "id": 6,
+        "nombre": "Samsung S24 Ultra",
+        "precio": 15000,
+        "imagen": "/imagenes/SamsungS24Ultra.jpg"
+    }
+]
