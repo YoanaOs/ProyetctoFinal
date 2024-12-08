@@ -47,6 +47,6 @@ app.post("/api/recargar-saldo", recargarSaldo);
 app.delete("/api/quitar-producto/:id", quitarProducto);
 
 // Iniciar el servidor
-app.listen(app.get("port"), () => {
+app.listen(app.get("port"), '0.0.0.0', () => {
     console.log("Server running on port ", app.get("port"));
 });
